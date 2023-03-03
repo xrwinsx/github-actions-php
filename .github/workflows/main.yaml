@@ -24,6 +24,8 @@
 #          port: ${{ secrets.SSH_PRIVATE_PORT }}
 #          script: ls -al
 
+name: remote rsync command
+on: [push]
 jobs:
   deploy:
     runs-on: ubuntu-latest
