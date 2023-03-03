@@ -8,18 +8,35 @@
 #      - name: my-step
 #        run: cat index.php
 
-name: remote ssh command
-on: [push]
+#name: remote ssh command
+#on: [push]
+#jobs:
+#  build:
+#    name: Build
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: executing remote ssh commands using ssh key
+#        uses: appleboy/ssh-action@v0.1.8
+#        with:
+#          host: ${{ secrets.SSH_PRIVATE_HOST }}
+#          username: ${{ secrets.SSH_PRIVATE_USERNAME }}
+#          key: ${{ secrets.SSH_PRIVATE_KEYGEN }}
+#          port: ${{ secrets.SSH_PRIVATE_PORT }}
+#          script: ls -al
+
 jobs:
-  build:
-    name: Build
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: executing remote ssh commands using ssh key
-        uses: appleboy/ssh-action@v0.1.8
+      - uses: actions/checkout@v2
+      - name: rsync deployments
+        uses: burnett01/rsync-deployments@5.2.1
         with:
-          host: ${{ secrets.SSH_PRIVATE_HOST }}
-          username: ${{ secrets.SSH_PRIVATE_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEYGEN }}
-          port: ${{ secrets.SSH_PRIVATE_PORT }}
-          script: ls -al
+          switches: -avzr
+          path: .
+          remote_path: ~/web/
+          remote_host: ${{ secrets.SSH_PRIVATE_HOST }}
+          remote_port: ${{ secrets.SSH_PRIVATE_PORT }}
+          remote_user: ${{ secrets.SSH_PRIVATE_USERNAME }}
+          remote_key: ${{ secrets.SSH_PRIVATE_KEYGEN }}
+          #remote_key_pass: ${{ secrets.DEPLOY_KEY_PASS }}
